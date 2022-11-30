@@ -6,5 +6,7 @@ import ReactDOM from 'react-dom'
 
 import App from './App'
 
+import './index.css'
+
 // Render App to root element
 ReactDOM.render(<App />, document.getElementById('root'))
