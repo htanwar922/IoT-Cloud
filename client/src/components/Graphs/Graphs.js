@@ -1,14 +1,19 @@
+import { CircularProgress } from "@mui/material"
+import { useState } from "react"
+
 import Graph from "./Graph/Graph"
 
 export default function Graphs () {
-	var graphs = []
-	for (let i = 0; i < 2; i++) {
-		graphs.push(<Graph key={i} />)
-	}
+	const graphs = useState((state) => state.graphs)
 	return (
-		<>
-			<h1>Graphs</h1>
-			{graphs}
-		</>
+		!(graphs.length + 1) ? <CircularProgress /> : (
+			<>
+			{
+				graphs.map((graph, i) => {
+					<Graph key={i} graph={graph} />
+				})
+			}
+			</>
+		)
 	)
 }

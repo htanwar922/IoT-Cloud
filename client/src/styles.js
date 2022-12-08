@@ -30,7 +30,8 @@ export default makeStyles(() => ({
 		// marginLeft: '15px',
 		// marginRight: '15px',
 	},
-	bgImage: {
+	frontImage: {
+		marginBottom: '20px'
 		// opacity: 0.5,
 		// position: "fixed",
 		// maxWidth: ''
