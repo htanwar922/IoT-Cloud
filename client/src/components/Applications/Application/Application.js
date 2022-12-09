@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Container, FormControlLabel, FormGroup, Grid, Modal, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Checkbox, Container, FormControlLabel, FormGroup, Grid, Grow, Modal, Stack, TextField, Typography } from "@mui/material";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import BackspaceRoundedIcon from '@mui/icons-material/BackspaceRounded';
@@ -25,19 +25,23 @@ export default function Application ({ application }) {
 	const classes = useStyles()
 
 	return (
-		<Stack direction="column" alignItems="stretch" gap={3} marginBottom={5}>
-			<Container className={classes.appTitle} maxWidth='lg'>
-				<Typography variant="h2" align="center">{application.name}</Typography>
+		<Grow in>
+			<Container>
+				<Stack direction="column" alignItems="stretch" gap={3} marginBottom={5}>
+					<Container className={classes.appTitle} maxWidth='lg'>
+						<Typography variant="h2" align="center">{application.name}</Typography>
+					</Container>
+					
+					<Container className={classes.graphsContainer} maxWidth='lg'>
+						<Graphs />
+					</Container>
+					
+					<Box maxWidth="lg" className={classes.newGraphButton}>
+						<ModalBox application={application} />
+					</Box>
+				</Stack>
 			</Container>
-			
-			<Container className={classes.graphsContainer} maxWidth='lg'>
-				<Graphs />
-			</Container>
-			
-			<Box maxWidth="lg" className={classes.newGraphButton}>
-				<ModalBox application={application} />
-			</Box>
-		</Stack>
+		</Grow>
 	)
 }
 
@@ -56,6 +60,7 @@ const ModalBox = ({ application }) => {
 	const handleCancel = () => setOpen(false);
 
 	const defaultFormState = {
+		_id: '',
 		props: {
 			rollingPlot: true,
 			startDate: dayjs().toString(),
