@@ -2,12 +2,12 @@ import { Box, Button, Checkbox, Container, FormControlLabel, FormGroup, Grid, Gr
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import BackspaceRoundedIcon from '@mui/icons-material/BackspaceRounded';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DataGrid } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import useStyles from './styles'
 import Graphs from "../../Graphs/Graphs";
@@ -33,11 +33,13 @@ export default function Application ({ application }) {
 					</Container>
 					
 					<Container className={classes.graphsContainer} maxWidth='lg'>
-						<Graphs />
+							<Graphs />
 					</Container>
 					
 					<Box maxWidth="lg" className={classes.newGraphButton}>
-						<ModalBox application={application} />
+						{/* <Props formState={formState} setFormState={setFormState}> */}
+							<ModalBox application={application} />
+						{/* </Props> */}
 					</Box>
 				</Stack>
 			</Container>
@@ -48,7 +50,14 @@ export default function Application ({ application }) {
 /**
  * _Application interface._
  * This will have graphs and a button for adding more graphs.
- * @param {{application: {name: String, alias: String, parameters: [String], parameterAliases: [String]}}} props  
+ * @param {{
+ * 		application: {
+ * 			name: String,
+ * 			alias: String,
+ * 			parameters: [String],
+ * 			parameterAliases: [String]
+ *		},
+ * }} props
  * @returns React.Fragment
  */
 const ModalBox = ({ application }) => {
@@ -57,35 +66,40 @@ const ModalBox = ({ application }) => {
 
 	const [open, setOpen] = useState(false);
 	const handleOpen = () => setOpen(true);
-	const handleCancel = () => setOpen(false);
-
-	const defaultFormState = {
-		_id: '',
-		props: {
-			rollingPlot: true,
-			startDate: dayjs().toString(),
-			endDate: dayjs().toString(),
-			metrics: [],
-			location: 'Bharti-Building',
-		},
-		data: {
-			Timestamp: [],
-			Samples: {}
-		}
+	const handleCancel = () => {
+		setOpen(false);
+		dispatch(actions.selectGraph(null))
 	}
+
 	const [formState, setFormState] = useState(defaultFormState)
+
+	const selectedGraph = useSelector(state =>
+		state.selectedGraphId ?
+		state.graphs.find(graph => graph._id === state.selectedGraphId) :
+		null
+	)
+
+	useEffect(() => {
+		if(selectedGraph) {
+			setFormState(selectedGraph)
+			setOpen(true)
+		}
+	}, [selectedGraph])
 
 	/** @param event {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} */
 	const handleSubmit = (event) => {
 		event.preventDefault()
-		
-		dispatch(actions.createGraph(formState))
-		handleCancel()
+		if(!selectedGraph)
+			dispatch(actions.createGraph(formState))
+		else {
+			dispatch(actions.updateGraph(formState))
+		}
+		handleClear()
+		setOpen(false)
 	}
 
 	/** @param event {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} */
-	const handleClear = (event) => {
-		event.preventDefault()
+	const handleClear = () => {
 		setFormState(defaultFormState)
 	}
 
@@ -125,7 +139,7 @@ const ModalBox = ({ application }) => {
 									</Props>
 
 									<Button variant="contained" type="submit" onClick={handleSubmit}> {/*sx={{ position: "fixed", bottom: 0, right: 0 }}*/}
-										Submit
+										{!selectedGraph ? 'Submit' : 'Update'}
 									</Button>
 								</Grid>
 							</Grid>
@@ -180,8 +194,8 @@ const MetricsGrid = ({ metrics, formState, setFormState }) => {
 			<DataGrid sx={{maxWidth: 400}}
 				rows={rows}
 				columns={columns}
-				pageSize={6}
-				rowsPerPageOptions={[6, 6]}
+				// pageSize={6}
+				rowsPerPageOptions={[5, 6, 10, 20, 100]}
 				autoHeight
 				checkboxSelection
 				disableSelectionOnClick
@@ -190,4 +204,19 @@ const MetricsGrid = ({ metrics, formState, setFormState }) => {
 			/>
 		</Box>
 	);
+}
+
+const defaultFormState = {
+	_id: null,
+	props: {
+		rollingPlot: true,
+		startDate: dayjs().toString(),
+		endDate: dayjs().toString(),
+		metrics: [],
+		location: 'Bharti-Building',
+	},
+	data: {
+		Timestamp: [],
+		Samples: {}
+	}
 }

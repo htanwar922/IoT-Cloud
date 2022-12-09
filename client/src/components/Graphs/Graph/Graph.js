@@ -1,23 +1,27 @@
 import { Button, Popover, Stack } from '@mui/material'
 import { Fragment, useState } from 'react'
 import Plot from 'react-plotly.js'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import EditRounded from '@mui/icons-material/EditRounded'
+import CloseRounded from '@mui/icons-material/CloseRounded'
+import { useDispatch } from 'react-redux'
 
 import useStyles from './styles'
 import actions from '../../../actions'
 
 export default function Graph ({ graphId, metric, xData, yData }) {
 	const classes = useStyles()
+	const dispatch = useDispatch()
 
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
 
 	const handleEdit = () => {
-		actions.selectGraph(graphId)
+		dispatch(actions.selectGraph(graphId))
+		setAnchorEl(null)
 	}
 
 	const handleClose = () => {
-		actions.removeGraph(graphId)
+		dispatch(actions.removeGraph(graphId))
 	}
 
 	return (
@@ -43,8 +47,11 @@ export default function Graph ({ graphId, metric, xData, yData }) {
 				}}
 			/>
 			<div className={classes.overlay}>
+				<Button variant='text' onClick={handleClose}>
+					<CloseRounded />
+				</Button>
 				<Button size='small' onClick={(event) => setAnchorEl(event.currentTarget)}>
-					<MoreHorizIcon fontSize='medium' color="primary" />
+					<EditRounded />
 				</Button>
 			</div>
 			<Popover open={open} anchorEl={anchorEl}
@@ -58,9 +65,6 @@ export default function Graph ({ graphId, metric, xData, yData }) {
 				<Stack>
 					<Button variant='outlined' onClick={handleEdit}>
 						Edit
-					</Button>
-					<Button variant='outlined' onClick={handleClose}>
-						Close
 					</Button>
 				</Stack>
 			</Popover>

@@ -1,4 +1,3 @@
-
 import * as api from '../../api'
 import { actions } from '../../store'
 
@@ -22,7 +21,7 @@ import { actions } from '../../store'
  */
 export const createGraph = (graph) => async (dispatch) => {
 	try {
-		const { data } = await api.createGraph(graph.props)
+		const { data } = await api.fetchData(graph.props)
 		graph.data = data
 		dispatch(actions.createGraph(graph))
 	} catch (error) {
@@ -45,7 +44,7 @@ export const rollGraphs = () => async (dispatch) => {
  * @param {Number} graphId 
  * @returns 
  */
-export const selectGraph = (graphId) => async (dispatch) => {
+ export const selectGraph = (graphId) => async (dispatch) => {
 	try {
 		dispatch(actions.selectGraph(graphId))
 	} catch (error) {
@@ -55,13 +54,15 @@ export const selectGraph = (graphId) => async (dispatch) => {
 
 /**
  * 
- * @param {Number} graphId 
+ * @param {Object} graph
  * @returns 
  */
-export const updateGraph = (graphId) => async (dispatch) => {
+export const updateGraph = (graph) => async (dispatch) => {
 	try {
-		// const { data } = await api.updateGraph()
-		dispatch(actions.updateGraph(graphId))
+		var newGraph = graph
+		const { data } = await api.fetchData(newGraph.props)
+		newGraph.data = data
+		dispatch(actions.updateGraph(newGraph))
 	} catch (error) {
 		console.log(error.message)
 	}
