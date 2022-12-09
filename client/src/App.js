@@ -8,6 +8,21 @@ import Applications, { ApplicationContainer } from "./components/Applications/Ap
 
 import logo from './images/IITD-Logo.jpg'
 
+export default function App () {
+	const classes = useStyles()
+	return (
+		<BrowserRouter> <ImageBackground>
+			<Container className={classes.appContainer} maxwidth="lg">
+				<Title />
+				<Routes>
+					<Route exact path={'/'} element={<Home />} />
+					{Applications()}
+				</Routes>
+			</Container>
+		</ImageBackground> </BrowserRouter>
+	)
+}
+
 function Title () {
 	const classes = useStyles()
 	return (
@@ -38,20 +53,3 @@ function Home () {
 		</Grow>
 	)
 }
-
-function App () {
-	const classes = useStyles()
-	return (
-		<BrowserRouter> <ImageBackground>
-			<Container className={classes.appContainer} maxwidth="lg">
-				<Title />
-				<Routes>
-					<Route exact path={'/'} element={<Home />} />
-					{Applications()}
-				</Routes>
-			</Container>
-		</ImageBackground> </BrowserRouter>
-	)
-}
-
-export default App

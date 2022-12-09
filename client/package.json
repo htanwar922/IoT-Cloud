@@ -15,6 +15,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.2.1",
     "dayjs": "^1.11.6",
     "ol": "^7.1.0",
     "plotly.js": "^2.16.3",
@@ -27,8 +28,6 @@
     "react-router-dom": "^6.4.3",
     "react-router-native": "^6.4.3",
     "react-scripts": "5.0.1",
-    "redux": "^4.2.0",
-    "redux-thunk": "^2.4.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
