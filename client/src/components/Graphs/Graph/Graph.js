@@ -1,26 +1,68 @@
 import { Button, Popover, Stack } from '@mui/material'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import Plot from 'react-plotly.js'
 import EditRounded from '@mui/icons-material/EditRounded'
 import CloseRounded from '@mui/icons-material/CloseRounded'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import useStyles from './styles'
 import actions from '../../../actions'
 
-export default function Graph ({ graphId, metric, xData, yData }) {
+export default function Graph ({ id }) {
 	const classes = useStyles()
 	const dispatch = useDispatch()
+
+	/** @type {import('../../Applications/Application/Application').graphType} */
+	const graph = useSelector(state => state.graphs.find(graph => graph._id === id))
+
+	const graphId = graph._id
+	const metric = graph.props.metrics[0]
+	const rollingInterval = graph.props.rollingIntervalSeconds * 1000
+
+	const timerIdRef = useRef(null)
+	const mRef = useRef(1)
+
+	var xData = graph.data.Timestamp
+	var yData = graph.data.Samples[graph.props.metrics[0]]
+
+	const [timerId, setTimerId] = useState(null)
+
+	useEffect(() => {
+		// console.log('TID', timerId, timerIdRef.current)
+		if(graph.props.rollingPlot) {	// && timerId === null
+			clearInterval(timerIdRef.current)
+			clearInterval(timerId)
+			var tid = setInterval(() => {
+				dispatch(actions.rollGraph(graph, mRef))
+			}, rollingInterval)
+			setTimerId(tid)
+			timerIdRef.current = tid
+			// console.log('Roll', tid)
+			// console.log(timerIdRef.current)
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [setTimerId, graph])
+
+	// useEffect(() => {
+	// 	clearInterval(timerIdRef.current)
+	// 	clearInterval(timerId)
+	// // eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [graphId])
 
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
 
 	const handleEdit = () => {
+		clearInterval(timerIdRef.current)
+		clearInterval(timerId)
 		dispatch(actions.selectGraph(graphId))
 		setAnchorEl(null)
 	}
 
 	const handleClose = () => {
+		// console.log('CTID', timerId, timerIdRef.current)
+		clearInterval(timerId)
+		clearInterval(timerIdRef.current)
 		dispatch(actions.removeGraph(graphId))
 	}
 

@@ -6,7 +6,14 @@ import useStyles from './styles'
 
 /**
  * _Applications list._
- * @type {[{name: String, alias: String, parameters: [String], parameterAliases: [String]}]}  
+ * @typedef {{
+ * 		name: String,
+ * 		alias: String,
+ * 		parameters: [String],
+ * 		parameterAliases: [String]
+ *	}} applicationType
+ *
+ * @type {[applicationType]}  
  */
 export const ApplicationList = [
 	{
@@ -23,6 +30,16 @@ export const ApplicationList = [
 	}
 ]
 
+export default function Applications () {
+	return (
+		<>
+			{ApplicationList.map(
+				(application, i) => ( <Route key={i} path={'/' + application.alias} element={<Application application={application} />} /> )
+			)}
+		</>
+	)
+}
+
 /**
  * _Application box._
  * Clicking this will open application specific page.
@@ -32,7 +49,7 @@ export const ApplicationList = [
 export function ApplicationBox (application) {
 	const classes = useStyles()
 	return (
-		<Link to={'/' + application.alias}>
+		<Link href={'/' + application.alias}>
 			<Button className={classes.appButton} variant='outlined'>
 				<Typography className={classes.heading} fontSize={30} fontFamily='initial'>{application.name}</Typography>
 			</Button>
@@ -47,15 +64,5 @@ export function ApplicationContainer () {
 				(application, i) => ( <Grid item key={i} xs={12} sm={6}>{ApplicationBox(application)}</Grid> )
 			)}
 		</Grid>
-	)
-}
-
-export default function Applications () {
-	return (
-		<>
-			{ApplicationList.map(
-				(application, i) => ( <Route key={i} path={'/' + application.alias} element={<Application application={application} />} /> )
-			)}
-		</>
 	)
 }

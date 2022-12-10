@@ -1,26 +1,27 @@
+import dayjs from 'dayjs'
+import minMax from 'dayjs/plugin/minMax'
+import duration from 'dayjs/plugin/duration'
 import * as api from '../../api'
 import { actions } from '../../store'
 
 /**
+ * _Create Graph._
  * Add new graphs to state.graphs
- * @param {{
- * 		_id: String,
- * 		props: {
- *			rollingPlot: Boolean,
- *			startDate: String,
- *			endDate: String,
- *			metrics: [String],
- *			location: String,
- *		},
- *		data: {
- *			Timestamp: [String],
- *			Samples: {}
- *		}
- * }} graph
+ * @param {import('../../components/Applications/Application/Application').graphType} graph
  * @returns 
  */
 export const createGraph = (graph) => async (dispatch) => {
 	try {
+		if(graph.props.rollingPlot) {
+			graph.props.startDate = dayjs().subtract(dayjs.duration({'days' : 1})).toISOString()
+			graph.props.endDate = dayjs().toISOString()
+
+			graph.props.startDate = dayjs('Thu Jun 14 2022 20:30:00.000 GMT+0530 (India Standard Time)')
+				.subtract(dayjs.duration({'days' : 1})).toISOString()
+			graph.props.endDate = dayjs('Thu Jun 14 2022 20:30:00.000 GMT+0530 (India Standard Time)')
+				.add(dayjs.duration({'days' : 1})).toISOString()
+		}
+		console.log(graph.props.endDate)
 		const { data } = await api.fetchData(graph.props)
 		graph.data = data
 		dispatch(actions.createGraph(graph))
@@ -29,11 +30,40 @@ export const createGraph = (graph) => async (dispatch) => {
 	}
 }
 
-
-export const rollGraphs = () => async (dispatch) => {
+/**
+ * 
+ * @param {import('../../components/Applications/Application/Application').graphType} graph
+ * @returns 
+ */
+export const rollGraph = (graph, mRef) => async (dispatch) => {
 	try {
-		// const { data } = await api.rollGraphs()
-		dispatch(actions.rollGraphs)
+		var lastTimestamp = graph.data.Timestamp[graph.data.Timestamp.length - 1]
+		lastTimestamp = lastTimestamp ? lastTimestamp : graph.props.endDate
+		const { data } = await api.fetchData({
+			...graph.props,
+			startDate:
+					dayjs(lastTimestamp).add(dayjs.duration({
+						'seconds': graph.props.rollingIntervalSeconds - 1
+					})).toISOString(),
+			endDate:
+					dayjs.min(
+						dayjs(),
+						dayjs(lastTimestamp).add(dayjs.duration({
+							'days' : mRef.current,
+						}))
+					).toISOString()
+		})
+
+		console.log(mRef.current, 'Len', graph.data.Timestamp.length, data.Timestamp.length)
+
+		if(!data.Timestamp.length) {
+			console.log(lastTimestamp, dayjs(lastTimestamp).add(dayjs.duration({'days' : mRef.current})).toString(), dayjs().toString())
+			if(dayjs(lastTimestamp).add(dayjs.duration({'days' : mRef.current})) < dayjs())
+				mRef.current += 1
+			return
+		}
+		mRef.current = 1
+		dispatch(actions.rollGraph({graph, data}))
 	} catch (error) {
 		console.log(error.message)
 	}
@@ -41,7 +71,7 @@ export const rollGraphs = () => async (dispatch) => {
 
 /**
  * 
- * @param {Number} graphId 
+ * @param {String} graphId 
  * @returns 
  */
  export const selectGraph = (graphId) => async (dispatch) => {
@@ -54,7 +84,7 @@ export const rollGraphs = () => async (dispatch) => {
 
 /**
  * 
- * @param {Object} graph
+ * @param {import('../../components/Applications/Application/Application').graphType} graph
  * @returns 
  */
 export const updateGraph = (graph) => async (dispatch) => {
@@ -70,7 +100,7 @@ export const updateGraph = (graph) => async (dispatch) => {
 
 /**
  * 
- * @param {Number} graphId 
+ * @param {String} graphId 
  * @returns 
  */
 export const removeGraph = (graphId) => async (dispatch) => {
@@ -80,3 +110,6 @@ export const removeGraph = (graphId) => async (dispatch) => {
 		console.log(error.message)
 	}
 }
+
+dayjs.extend(minMax)
+dayjs.extend(duration)

@@ -18,7 +18,7 @@ import actions from '../../../actions'
 /**
  * _Application interface._
  * This will have graphs and a button for adding more graphs.
- * @param {{application: {name: String, alias: String, parameters: [String], parameterAliases: [String]}}} props  
+ * @param {{application: import("../Applications").applicationType}} props  
  * @returns Grid
  */
 export default function Application ({ application }) {
@@ -37,9 +37,7 @@ export default function Application ({ application }) {
 					</Container>
 					
 					<Box maxWidth="lg" className={classes.newGraphButton}>
-						{/* <Props formState={formState} setFormState={setFormState}> */}
 							<ModalBox application={application} />
-						{/* </Props> */}
 					</Box>
 				</Stack>
 			</Container>
@@ -48,15 +46,10 @@ export default function Application ({ application }) {
 }
 
 /**
- * _Application interface._
+ * _Modal interface._
  * This will have graphs and a button for adding more graphs.
  * @param {{
- * 		application: {
- * 			name: String,
- * 			alias: String,
- * 			parameters: [String],
- * 			parameterAliases: [String]
- *		},
+ * 		application: import("../Applications").applicationType,
  * }} props
  * @returns React.Fragment
  */
@@ -71,7 +64,7 @@ const ModalBox = ({ application }) => {
 		dispatch(actions.selectGraph(null))
 	}
 
-	const [formState, setFormState] = useState(defaultFormState)
+	const [formState, setFormState] = useState(defaultGraph)
 
 	const selectedGraph = useSelector(state =>
 		state.selectedGraphId ?
@@ -100,7 +93,7 @@ const ModalBox = ({ application }) => {
 
 	/** @param event {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} */
 	const handleClear = () => {
-		setFormState(defaultFormState)
+		setFormState(defaultGraph)
 	}
 
 	return (
@@ -165,7 +158,7 @@ const ModalDateSelector = ({ formState, setFormState }) => {
 					<DateTimePicker name='startDate' disabled={formState.props.rollingPlot}
 						renderInput={(props) => <TextField onKeyDown={(event) => event.preventDefault()} {...props} />}
 						label={<font size='+2'><em><b>Start Date</b></em></font>} value={formState.props.startDate}
-						onChange={(newDate) => setFormState({...formState, props: {...formState.props, startDate: newDate.toString()}})}
+						onChange={(newDate) => setFormState({...formState, props: {...formState.props, startDate: newDate.toISOString()}})}
 					/>
 				</LocalizationProvider>
 			} />
@@ -175,7 +168,7 @@ const ModalDateSelector = ({ formState, setFormState }) => {
 					<DateTimePicker name='endDate' disabled={formState.props.rollingPlot}
 						renderInput={(props) => <TextField onKeyDown={(event) => event.preventDefault()} {...props} />}
 						label={<font size='+2'><em><b>End Date</b></em></font>} value={formState.props.endDate}
-						onChange={(newDate) => setFormState({...formState, props: {...formState.props, endDate: newDate.toString()}})}
+						onChange={(newDate) => setFormState({...formState, props: {...formState.props, endDate: newDate.toISOString()}})}
 					/>
 				</LocalizationProvider>
 			} />
@@ -206,17 +199,37 @@ const MetricsGrid = ({ metrics, formState, setFormState }) => {
 	);
 }
 
-const defaultFormState = {
+/**
+ * @typedef {{
+ * 		_id: String,
+ * 		props: {
+ *			rollingPlot: Boolean,
+ *			rollingIntervalSeconds: Number,
+ *			startDate: String,
+ *			endDate: String,
+ *			metrics: [String],
+ *			location: String,
+ *		},
+ *		data: {
+ *			Timestamp: [String],
+ *			Samples: {}
+ *		},
+ * }} graphType
+ * 
+ * @type {graphType}
+ */
+const defaultGraph = {
 	_id: null,
 	props: {
 		rollingPlot: true,
-		startDate: dayjs().toString(),
-		endDate: dayjs().toString(),
+		rollingIntervalSeconds: 5,
+		startDate: dayjs('Thu Jun 14 2022 20:30:00.000 GMT+0530 (India Standard Time)').toISOString(),
+		endDate: dayjs().toISOString(),
 		metrics: [],
 		location: 'Bharti-Building',
 	},
 	data: {
 		Timestamp: [],
 		Samples: {}
-	}
+	},
 }

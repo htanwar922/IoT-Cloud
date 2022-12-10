@@ -1,6 +1,6 @@
 import { Router } from "express"
 
-import { createGraph } from "../controllers/generateGraph.js"
+import { createGraph } from "../controllers/createGraph.js"
 
 const router = Router();
 

@@ -7,21 +7,18 @@ import useStyles from './styles'
 export default function Graphs () {
 	const classes = useStyles()
 
-	const graphs = useSelector(state => state.graphs)
+	/** @type {[import("../Applications/Application/Application").graphType]} */
+	const graphIds = useSelector(state => state.graphs.map(graph => graph._id))
+	// console.log('ReRendered', Array(graphIds.length))
 
 	return (
 		<Grid container direction="column" spacing={0} alignItems="center" justifyContent="center">
-			{!graphs.length ? <CircularProgress /> : <>
-				{graphs.map((graph, i) => <div key={i}>
-					{graph.props.metrics.map(metric =>
-						<Grid item key={`${i}_${metric}`} className={classes.graphContainer} maxWidth='lg'>
-								<Graph graphId={graph._id} metric={metric}
-									xData={graph.data.Timestamp}
-									yData={graph.data.Samples[metric]}
-								/>
-						</Grid>
-					)}
-				</div>)}
+			{!graphIds.length ? <CircularProgress /> : <>
+				{graphIds.map(id =>
+					<Grid item key={id} className={classes.graphContainer} maxWidth='lg'>
+						<Graph id={id} />
+					</Grid>
+				)}
 			</>}
 		</Grid>
 	)
