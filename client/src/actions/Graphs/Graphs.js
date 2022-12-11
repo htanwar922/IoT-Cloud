@@ -16,10 +16,10 @@ export const createGraph = (graph) => async (dispatch) => {
 			graph.props.startDate = dayjs().subtract(dayjs.duration({'days' : 1})).toISOString()
 			graph.props.endDate = dayjs().toISOString()
 
-			graph.props.startDate = dayjs('Thu Jun 14 2022 20:30:00.000 GMT+0530 (India Standard Time)')
-				.subtract(dayjs.duration({'days' : 1})).toISOString()
-			graph.props.endDate = dayjs('Thu Jun 14 2022 20:30:00.000 GMT+0530 (India Standard Time)')
-				.add(dayjs.duration({'days' : 1})).toISOString()
+			// graph.props.startDate = dayjs('Jun 14 2022 20:30:00.000 GMT+0530 (India Standard Time)',
+			// 	'MMM D YYYY HH:mm:ss.SSS').subtract(dayjs.duration({'days' : 1})).toISOString()
+			// graph.props.endDate = dayjs('Jun 14 2022 20:30:00.000 GMT+0530 (India Standard Time)',
+			// 	'MMM D YYYY HH:mm:ss.SSS').add(dayjs.duration({'days' : 1})).toISOString()
 		}
 		console.log(graph.props.endDate)
 		const { data } = await api.fetchData(graph.props)

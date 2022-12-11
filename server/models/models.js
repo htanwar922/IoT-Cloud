@@ -35,7 +35,7 @@ export function dbCollection(collection = collectionName) {
 	return model('Test', APMDSchema, collection);
 }
 
-var dateIST = dayjs('Thu Jun 16 2022 20:30:00.000 GMT+0530 (India Standard Time)')
+var dateIST = dayjs('Jun 16 2022 20:30:00.000 GMT+0530 (India Standard Time)', 'MMM D YYYY HH:mm:ss.SSS')
 console.log(dateIST.toString())
 const doc = await dbCollection().find({ Timestamp: { $lte: dateIST.toISOString() } });
 console.log(doc);

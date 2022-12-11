@@ -18,7 +18,7 @@ for (const name of Object.keys(nets)) {
 }
 console.log(ip_address)
 
-export const hostname = ip_address['eth0'] // '10.17.10.11';
+export const hostname = ip_address['eth0'] ? ip_address['eth0'] : ip_address[Object.keys(ip_address)[0]]
 export const port = 5000;
 export const uri = 'mongodb://localhost:27017';
 export const databaseName ='APMDjs'

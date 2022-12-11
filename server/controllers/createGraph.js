@@ -11,9 +11,9 @@ export const createGraph = async (req, res) => {
 	}
 	
 	var element = req.body
-	var dateIST_From = new Date(element.startDate)	// 'Thu Jun 16 2022 14:00:00.000 GMT+0530 (India Standard Time)'
+	var dateIST_From = new Date(element.startDate)	// 'Jun 16 2022 14:00:00.000 GMT+0530 (India Standard Time)'
 	if(element.endDate)
-		var dateIST_To = new Date(element.endDate)	// 'Thu Jun 16 2022 16:00:00.000 GMT+0530 (India Standard Time)'
+		var dateIST_To = new Date(element.endDate)	// 'Jun 16 2022 16:00:00.000 GMT+0530 (India Standard Time)'
 	else
 	{
 		var dateIST_To = new Date(dateIST_From)

@@ -7,6 +7,7 @@ import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DataGrid } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { useDispatch, useSelector } from "react-redux";
 
 import useStyles from './styles'
@@ -223,7 +224,8 @@ const defaultGraph = {
 	props: {
 		rollingPlot: true,
 		rollingIntervalSeconds: 5,
-		startDate: dayjs('Thu Jun 14 2022 20:30:00.000 GMT+0530 (India Standard Time)').toISOString(),
+		startDate: dayjs('Jun 14 2022 20:30:00.000 GMT+0530 (India Standard Time)',
+						'MMM D YYYY HH:mm:ss.SSS').toISOString(),
 		endDate: dayjs().toISOString(),
 		metrics: [],
 		location: 'Bharti-Building',
@@ -233,3 +235,5 @@ const defaultGraph = {
 		Samples: {}
 	},
 }
+
+dayjs.extend(customParseFormat)
