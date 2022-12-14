@@ -57,6 +57,35 @@ const graphsSlice = createSlice({
 			console.log('Len', state.graphs[index].data.Timestamp.length)
 		},
 
+		streamGraph (state, action) {		// payload - {graph, data}
+			let index = findElementById(state.graphs, action.payload.graph._id)
+			if(index === -1)
+				return
+			console.log(action.payload)
+			var metric = state.graphs[index].props.metrics[0]
+			state.graphs[index].props = action.payload.props
+			state.graphs[index].data.Timestamp = [
+				state.graphs[index].props.startDate,
+				...action.payload.data.Timestamp,
+				state.graphs[index].props.endDate
+			]
+			state.graphs[index].data.Samples[metric] = [
+				null,
+				...action.payload.data.Samples[metric],
+				null
+			]
+
+			// var sortIndex = argSort(state.graphs[index].data.Timestamp)
+			// state.graphs[index].data.Timestamp = arraySliceAt(state.graphs[index].data.Timestamp, sortIndex)
+			// state.graphs[index].data.Samples[metric] = arraySliceAt(state.graphs[index].data.Samples[metric], sortIndex)
+			
+			state.graphs[index].props.endDate = dayjs(
+					action.payload.data.Timestamp[action.payload.data.Timestamp.length - 1]
+				).add(state.graphs[index].props.rollingIntervalSeconds, 'second').toISOString()
+			
+			console.log('Len', state.graphs[index].data.Timestamp.length)
+		},
+
 		selectGraph (state, action) {	// payload - graph id
 			state.selectedGraphId = action.payload
 		},

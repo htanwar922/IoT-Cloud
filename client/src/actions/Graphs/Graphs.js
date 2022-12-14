@@ -71,6 +71,30 @@ export const rollGraph = (graph, mRef) => async (dispatch) => {
 
 /**
  * 
+ * @param {import('../../components/Applications/Application/Application').graphType} graph
+ * @returns 
+ */
+ export const streamGraph = (graph, mRef) => async (dispatch) => {
+	try {
+		const props = {
+			...graph.props,
+			startDate:
+					dayjs().subtract(dayjs.duration({
+						'days': 1
+					})).toISOString(),
+			endDate:
+					dayjs().toISOString()
+		}
+		const { data } = await api.fetchData(props)
+		console.log('HERE', data)
+		dispatch(actions.streamGraph({graph, props, data}))
+	} catch (error) {
+		console.log(error.message)
+	}
+}
+
+/**
+ * 
  * @param {String} graphId 
  * @returns 
  */
@@ -81,6 +105,7 @@ export const rollGraph = (graph, mRef) => async (dispatch) => {
 		console.log(error.message)
 	}
 }
+
 
 /**
  * 

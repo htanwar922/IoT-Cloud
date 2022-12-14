@@ -1,5 +1,7 @@
 import { networkInterfaces } from 'os'
-import { connect, connections } from 'mongoose'
+import { createConnection } from 'mongoose'
+
+import ApplicationList from '../config/Applications.js';
 
 const nets = networkInterfaces();
 const ip_address = {} //Object.create(null);
@@ -21,22 +23,23 @@ console.log(ip_address)
 export const hostname = ip_address['eth0'] ? ip_address['eth0'] : ip_address[Object.keys(ip_address)[0]]
 export const port = 5000;
 export const uri = 'mongodb://localhost:27017';
-export const databaseName ='APMDjs'
-export const collectionName = "collection";
 
-const err = await connect(uri + '/' + databaseName).then(() => {
-        console.log("Database Connection Successful");
-    }).catch((error) => {
-        console.log(error);
-    });
-export var conn = connections[0]; // mongoose.connection - default
-
-conn.on('connected', function() {
-        console.log('Database connected');
-    });
-conn.on('disconnected', function(){
-        console.log('Database disconnected');
-    })
-conn.on('error', (error) => {
-        console('Database connection error: ' + error)
-    });   // console.error.bind(console, 'connection error:' + error)
+ApplicationList.forEach(async application => {
+    // const err = await connect(`${uri}/${databaseName}`).then(() => {
+    //         console.log("Database Connection Successful");
+    //     }).catch((error) => {
+    //         console.log(error);
+    //     });
+    var conn = createConnection(`${uri}/${application.databaseName}`)
+    conn.on('connected', function() {
+            console.log(`${application.databaseName} database connected`);
+        });
+    conn.on('disconnected', function(){
+            console.log(`${application.databaseName} database disconnected`);
+        })
+    conn.on('error', (error) => {
+            console(`${application.databaseName} database connection error: ${error}`)
+        });
+    application.connection = conn
+});
+console.log("HERE")

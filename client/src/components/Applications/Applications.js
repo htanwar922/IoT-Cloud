@@ -10,7 +10,8 @@ import useStyles from './styles'
  * 		name: String,
  * 		alias: String,
  * 		parameters: [String],
- * 		parameterAliases: [String]
+ * 		parameterAliases: [String],
+ * 		options: [String]
  *	}} applicationType
  *
  * @type {[applicationType]}  
@@ -20,13 +21,25 @@ export const ApplicationList = [
 		name: 'Air Pollution Monitoring Devices',
 		alias: 'APMD',
 		parameters: ['Temperature', 'Humidity', 'NO2', 'OX', 'CO', 'SO2', 'H2S', 'NO', 'PM_1', 'PM_2&period;5', 'PM_10'],
-		parameterAliases: ['Temperature', 'Humidity', 'NO2', 'O3', 'CO', 'SO2', 'H2S', 'NO', 'PM 1', 'PM 2.5', 'PM 10']
+		parameterAliases: ['Temperature', 'Humidity', 'NO2', 'O3', 'CO', 'SO2', 'H2S', 'NO', 'PM 1', 'PM 2.5', 'PM 10'],
+		options: []
 	},
 	{
 		name: 'Smart Meters',
 		alias: 'SM',
-		parameters: ['Voltage', 'Current'],
-		parameterAliases: ['Voltage', 'Current']
+		parameters: [
+			"Energy", "Frequency",
+			"AppPower (R)", "Power (R)", "PF (R)", "Voltage (R)", "Current (R)",
+			"AppPower (Y)", "Power (Y)", "PF (Y)", "Voltage (Y)", "Current (Y)",
+			"AppPower (B)", "Power (B)", "PF (B)", "Voltage (B)", "Current (B)",
+		],
+		parameterAliases: [
+			"Energy", "Frequency",
+			"AppPower (R)", "Power (R)", "PF (R)", "Voltage (R)", "Current (R)",
+			"AppPower (Y)", "Power (Y)", "PF (Y)", "Voltage (Y)", "Current (Y)",
+			"AppPower (B)", "Power (B)", "PF (B)", "Voltage (B)", "Current (B)",
+		],
+		options: ['Original', 'Reconstructed']
 	}
 ]
 

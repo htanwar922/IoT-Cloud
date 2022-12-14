@@ -20,16 +20,18 @@ export const createGraph = async (req, res) => {
 		dateIST_To.setDate(dateIST_To.getDate() + 1)
 	}
 
-	var response = {
-		Timestamp: [],
-		Samples: {}
-	}
 	var query = { Timestamp: {}, /*Location: element.location*/ }
 	query.Timestamp['$gte'] = dateIST_From.toISOString()
 	if(element.endDate)
 		query.Timestamp['$lt'] = dateIST_To.toISOString()
 	console.log('QUERY', query)
-	await dbCollection().find(query).exec()
+
+	var response = {
+		Timestamp: [],
+		Samples: {}
+	}
+
+	await dbCollection(req.body.applicationName).find(query).exec()
 		.then(docs => {
 			element.metrics.forEach(metric => response.Samples[metric] = [])
 			docs.sort(GetSortOrder('Timestamp')).forEach(doc => {

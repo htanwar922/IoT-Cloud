@@ -11,7 +11,6 @@ import express from "express";
 import cors from 'cors'
 
 import { hostname, port } from "./config/connection.js";
-
 import generateGraphRoutes from './routes/createGraph.js'
 
 const app = express();

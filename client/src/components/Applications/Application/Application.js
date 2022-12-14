@@ -65,7 +65,7 @@ const ModalBox = ({ application }) => {
 		dispatch(actions.selectGraph(null))
 	}
 
-	const [formState, setFormState] = useState(defaultGraph)
+	const [formState, setFormState] = useState(defaultGraph(application))
 
 	const selectedGraph = useSelector(state =>
 		state.selectedGraphId ?
@@ -88,13 +88,14 @@ const ModalBox = ({ application }) => {
 		else {
 			dispatch(actions.updateGraph(formState))
 		}
+		console.log('Submitted', formState)
 		handleClear()
 		setOpen(false)
 	}
 
 	/** @param event {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} */
 	const handleClear = () => {
-		setFormState(defaultGraph)
+		setFormState(defaultGraph(application))
 	}
 
 	return (
@@ -216,12 +217,17 @@ const MetricsGrid = ({ metrics, formState, setFormState }) => {
  *			Samples: {}
  *		},
  * }} graphType
- * 
- * @type {graphType}
+ * /
+
+/** 
+ * Returns default form/graph state for application.
+ * @param {import("../Applications").applicationType} application
+ * @return {graphType}
  */
-const defaultGraph = {
+const defaultGraph = (application) => ({
 	_id: null,
 	props: {
+		applicationName: application.alias,
 		rollingPlot: true,
 		rollingIntervalSeconds: 5,
 		startDate: dayjs('Jun 14 2022 20:30:00.000 GMT+0530 (India Standard Time)',
@@ -234,6 +240,6 @@ const defaultGraph = {
 		Timestamp: [],
 		Samples: {}
 	},
-}
+})
 
 dayjs.extend(customParseFormat)
