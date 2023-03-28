@@ -5,14 +5,9 @@ import EditRounded from '@mui/icons-material/EditRounded'
 import CloseRounded from '@mui/icons-material/CloseRounded'
 import { useDispatch, useSelector } from 'react-redux'
 import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
 
 import useStyles from './styles'
 import actions from '../../../actions'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
 
 export default function Graph ({ id }) {
 	const classes = useStyles()
