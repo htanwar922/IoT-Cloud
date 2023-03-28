@@ -4,9 +4,15 @@ import Plot from 'react-plotly.js'
 import EditRounded from '@mui/icons-material/EditRounded'
 import CloseRounded from '@mui/icons-material/CloseRounded'
 import { useDispatch, useSelector } from 'react-redux'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 
 import useStyles from './styles'
 import actions from '../../../actions'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 export default function Graph ({ id }) {
 	const classes = useStyles()
@@ -22,9 +28,9 @@ export default function Graph ({ id }) {
 	const timerIdRef = useRef(null)
 	const mRef = useRef(1)
 
-	var xData = graph.data.Timestamp
+	var xData = graph.data.Timestamp.map(timestamp => dayjs(timestamp).add(5*60+30, 'minute').toISOString())
 	var yData = graph.data.Samples[graph.props.metrics[0]]
-
+	
 	const [timerId, setTimerId] = useState(null)
 
 	useEffect(() => {
