@@ -32,18 +32,21 @@ const graphsSlice = createSlice({
 			})
 		},
 
-		rollGraph (state, action) {		// payload - {graph, data}
+		streamGraph (state, action) {		// payload - {graph, data}
 			let index = findElementById(state.graphs, action.payload.graph._id)
 			if(index === -1)
 				return
 			var metric = state.graphs[index].props.metrics[0]
+			state.graphs[index].props = action.payload.props
 			state.graphs[index].data.Timestamp = [
-				...state.graphs[index].data.Timestamp,
-				...action.payload.data.Timestamp
+				state.graphs[index].props.startDate,
+				...action.payload.data.Timestamp,
+				state.graphs[index].props.endDate
 			]
 			state.graphs[index].data.Samples[metric] = [
-				...state.graphs[index].data.Samples[metric],
-				...action.payload.data.Samples[metric]
+				state.graphs[index].data.Timestamp.length === 2 ? 0 : null,
+				...action.payload.data.Samples[metric],
+				state.graphs[index].data.Timestamp.length === 2 ? 0 : null
 			]
 
 			// var sortIndex = argSort(state.graphs[index].data.Timestamp)
@@ -57,7 +60,7 @@ const graphsSlice = createSlice({
 			console.log('Len', state.graphs[index].data.Timestamp.length)
 		},
 
-		streamGraph (state, action) {		// payload - {graph, data}
+		rollGraph (state, action) {		// payload - {graph, data}
 			let index = findElementById(state.graphs, action.payload.graph._id)
 			if(index === -1)
 				return
@@ -70,9 +73,9 @@ const graphsSlice = createSlice({
 				state.graphs[index].props.endDate
 			]
 			state.graphs[index].data.Samples[metric] = [
-				null,
+				state.graphs[index].data.Timestamp.length === 2 ? 0 : null,
 				...action.payload.data.Samples[metric],
-				null
+				state.graphs[index].data.Timestamp.length === 2 ? 0 : null
 			]
 
 			// var sortIndex = argSort(state.graphs[index].data.Timestamp)

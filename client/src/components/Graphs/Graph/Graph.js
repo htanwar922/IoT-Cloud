@@ -33,7 +33,7 @@ export default function Graph ({ id }) {
 			clearInterval(timerIdRef.current)
 			clearInterval(timerId)
 			var tid = setInterval(() => {
-				dispatch(actions.streamGraph(graph, mRef))
+				dispatch(actions.rollGraph(graph, mRef))
 			}, rollingInterval)
 			setTimerId(tid)
 			timerIdRef.current = tid
