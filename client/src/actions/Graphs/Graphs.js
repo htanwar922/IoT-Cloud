@@ -13,7 +13,7 @@ import { actions } from '../../store'
 export const createGraph = (graph) => async (dispatch) => {
 	try {
 		if(graph.props.rollingPlot) {
-			graph.props.startDate = dayjs().subtract(dayjs.duration({'seconds': graph.props.rollingIntervalSeconds * 2})).toISOString()
+			graph.props.startDate = dayjs().subtract(dayjs.duration({'seconds': graph.props.rollingWindowWidthMinutes})).toISOString()
 			graph.props.endDate = dayjs().toISOString()
 
 			// graph.props.startDate = dayjs('Jun 14 2022 20:30:00.000 GMT+0530 (India Standard Time)',
@@ -80,7 +80,7 @@ export const streamGraph = (graph, mRef) => async (dispatch) => {
 			...graph.props,
 			startDate:
 					dayjs().subtract(dayjs.duration({
-						'seconds': graph.props.rollingIntervalSeconds
+						'seconds': graph.props.rollingWindowWidthMinutes
 					})).toISOString(),
 			endDate:
 					dayjs().toISOString()

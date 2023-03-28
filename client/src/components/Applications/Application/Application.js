@@ -206,6 +206,7 @@ const MetricsGrid = ({ metrics, formState, setFormState }) => {
  * 		_id: String,
  * 		props: {
  *			rollingPlot: Boolean,
+ *			rollingWindowWidthMinutes: Number,
  *			rollingIntervalSeconds: Number,
  *			startDate: String,
  *			endDate: String,
@@ -229,6 +230,7 @@ const defaultGraph = (application) => ({
 	props: {
 		applicationName: application.alias,
 		rollingPlot: true,
+		rollingWindowWidthMinutes: 10,
 		rollingIntervalSeconds: 5,
 		startDate: dayjs('Jun 14 2022 20:30:00.000 GMT+0530 (India Standard Time)',
 						'MMM D YYYY HH:mm:ss.SSS').toISOString(),
