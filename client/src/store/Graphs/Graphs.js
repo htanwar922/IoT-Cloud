@@ -12,13 +12,14 @@ const graphsSlice = createSlice({
 		// (Themselves are API - deep inner content not visible outside to reducer-user.)
 
 		createGraph (state, action) {	// payload - graph
-			action.payload.props.metrics.forEach(metric => {
+			action.payload.props.metrics.forEach((metric, i) => {
 				state.graphs.push({
 					...action.payload,
 					_id: uuidv4(),
 					props: {
 						...action.payload.props,
-						metrics: [metric]
+						metrics: [metric],
+						metricAliases: [action.payload.props.metricAliases[i]]
 					},
 					data: {
 						...action.payload.data,

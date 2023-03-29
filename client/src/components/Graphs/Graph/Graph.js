@@ -18,13 +18,14 @@ export default function Graph ({ id }) {
 
 	const graphId = graph._id
 	const metric = graph.props.metrics[0]
+	const title = graph.props.metricAliases[0]
 	const rollingInterval = graph.props.rollingIntervalSeconds * 1000
 
 	const timerIdRef = useRef(null)
 	const mRef = useRef(1)
 
 	var xData = graph.data.Timestamp.map(timestamp => dayjs(timestamp).add(5*60+30, 'minute').toISOString())
-	var yData = graph.data.Samples[graph.props.metrics[0]]
+	var yData = graph.data.Samples[metric]
 	
 	const [timerId, setTimerId] = useState(null)
 
@@ -78,14 +79,14 @@ export default function Graph ({ id }) {
 				}]}
 				layout={{
 					width: '1080',
-					title: `${metric}`,
+					title: `${title}`,
 					xaxis: {
 						title: 'Timeseries',
 						type: 'time',
 						zeroline: false
 					},
 					yaxis: {
-						title: `${metric}`,
+						title: `${title}`,
 					}
 				}}
 			/>

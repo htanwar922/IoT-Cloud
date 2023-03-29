@@ -88,7 +88,7 @@ const ModalBox = ({ application }) => {
 		else {
 			dispatch(actions.updateGraph(formState))
 		}
-		console.log('Submitted', formState)
+		console.log('FormState', formState)
 		handleClear()
 		setOpen(false)
 	}
@@ -130,7 +130,7 @@ const ModalBox = ({ application }) => {
 								<Grid item xs='auto' sm='auto'>
 									<Props formState={formState} setFormState={setFormState}>
 										<ModalDateSelector />
-										<MetricsGrid metrics={application.parameterAliases} />
+										<MetricsGrid metrics={application.parameters} metricAliases={application.parameterAliases} />
 									</Props>
 
 									<Button variant="contained" type="submit" onClick={handleSubmit}> {/*sx={{ position: "fixed", bottom: 0, right: 0 }}*/}
@@ -178,12 +178,12 @@ const ModalDateSelector = ({ formState, setFormState }) => {
 	)
 }
 
-const MetricsGrid = ({ metrics, formState, setFormState }) => {
+const MetricsGrid = ({ metrics, metricAliases, formState, setFormState }) => {
 	var columns = [
 		{ field: 'id', headerName: 'ID', width: 10 },
 		{ field: 'metric', headerName: 'Metrics', width: 250 }
 	]
-	var rows = metrics.map((metric, i) => ({ id: i+1, metric: metric}))
+	var rows = metricAliases.map((metricName, i) => ({ id: i+1, metric: metricName}))
 	return (
 		<Box sx={{ width: '100%', marginBottom: 3 }}>
 			<DataGrid sx={{maxWidth: 400}}
@@ -195,7 +195,12 @@ const MetricsGrid = ({ metrics, formState, setFormState }) => {
 				checkboxSelection
 				disableSelectionOnClick
 				experimentalFeatures={{ newEditingApi: true }}
-				onSelectionModelChange={(indices) => setFormState({...formState, props: {...formState.props, metrics: indices.map(index => metrics[index - 1])}})}
+				onSelectionModelChange={(indices) => setFormState({...formState,
+					props: {...formState.props,
+						metrics: indices.map(index => metrics[index - 1]),
+						metricAliases: indices.map(index => metricAliases[index - 1])
+					}
+				})}
 			/>
 		</Box>
 	);
@@ -211,6 +216,7 @@ const MetricsGrid = ({ metrics, formState, setFormState }) => {
  *			startDate: String,
  *			endDate: String,
  *			metrics: [String],
+ *			metricAliases: [String]
  *			location: String,
  *		},
  *		data: {
@@ -230,12 +236,13 @@ const defaultGraph = (application) => ({
 	props: {
 		applicationName: application.alias,
 		rollingPlot: true,
-		rollingWindowWidthMinutes: 10,
+		rollingWindowWidthMinutes: 20,
 		rollingIntervalSeconds: 5,
 		startDate: dayjs('Jun 14 2022 20:30:00.000 GMT+0530 (India Standard Time)',
 						'MMM D YYYY HH:mm:ss.SSS').toISOString(),
 		endDate: dayjs().toISOString(),
 		metrics: [],
+		metricAliases: [],
 		location: 'Bharti-Building',
 	},
 	data: {

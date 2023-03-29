@@ -29,7 +29,7 @@ function Title () {
 		<AppBar className={classes.appBar} position="relative" color="inherit">
 			<Stack direction="row" alignItems="center" gap={1}>
 				<img className={classes.logo} src={logo} alt="IIT Delhi" height={60} />
-				<Typography className={classes.heading} variant="h2"> <i>Baadal</i> - The IoT Cloud </Typography>
+				<Typography className={classes.heading} variant="h2"> <i>Baadal</i> - IIT Delhi Cloud </Typography>
 				<img className={classes.logo} src={logo} alt="IIT Delhi" height={60} />
 			</Stack>
 		</AppBar>

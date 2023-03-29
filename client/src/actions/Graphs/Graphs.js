@@ -21,7 +21,7 @@ export const createGraph = (graph) => async (dispatch) => {
 			// graph.props.endDate = dayjs('Jun 14 2022 20:30:00.000 GMT+0530 (India Standard Time)',
 			// 	'MMM D YYYY HH:mm:ss.SSS').add(dayjs.duration({'days' : 1})).toISOString()
 		}
-		console.log(graph.props.endDate)
+		console.log('CREATE', graph.props)
 		const { data } = await api.fetchData(graph.props)
 		graph.data = data
 		dispatch(actions.createGraph(graph))
@@ -86,7 +86,7 @@ export const streamGraph = (graph, mRef) => async (dispatch) => {
 					dayjs().toISOString()
 		}
 		const { data } = await api.fetchData(props)
-		console.log('HERE', data)
+		console.log('HERE', props, data)
 		dispatch(actions.rollGraph({graph, props, data}))
 	} catch (error) {
 		console.log(error.message)
