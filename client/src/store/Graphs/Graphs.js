@@ -101,7 +101,8 @@ const graphsSlice = createSlice({
 					_id: uuidv4(),
 					props: {
 						...action.payload.props,
-						metrics: [metric]
+						metrics: [metric],
+						metricAliases: [action.payload.props.metricAliases[i]]
 					},
 					data: {
 						...action.payload.data,
