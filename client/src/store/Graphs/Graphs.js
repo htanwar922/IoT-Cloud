@@ -96,7 +96,7 @@ const graphsSlice = createSlice({
 
 		updateGraph (state, action) {	// payload - current graph
 			let index = findElementById(state.graphs, state.selectedGraphId)
-			state.graphs.splice(index + 1, 0, ...action.payload.props.metrics.map(metric => ({
+			state.graphs.splice(index + 1, 0, ...action.payload.props.metrics.map((metric, i) => ({
 					...action.payload,
 					_id: uuidv4(),
 					props: {
