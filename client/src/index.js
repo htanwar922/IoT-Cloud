@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { createTheme, ThemeProvider } from '@mui/material'
+import { createTheme, Grid, ThemeProvider, Typography } from '@mui/material'
 
 import App from './App'
 import store from './store'
@@ -13,6 +13,7 @@ ReactDOM.render(
 	<Provider store={store}>
 		<ThemeProvider theme={theme}>
 			<App />
+			<Typography position={{position: "fixed", bottom: theme.spacing(2), right: theme.spacing(2)}} variant='h6'>Created by Himanshu</Typography>
 		</ThemeProvider>
 	</Provider>
 	,
