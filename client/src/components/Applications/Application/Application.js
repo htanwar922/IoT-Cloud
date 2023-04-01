@@ -217,7 +217,7 @@ const MetricsGrid = ({ metrics, metricAliases, formState, setFormState }) => {
  *			endDate: String,
  *			metrics: [String],
  *			metricAliases: [String]
- *			location: String,
+ *			locations: [String],
  *		},
  *		data: {
  *			Timestamp: [String],
@@ -243,7 +243,7 @@ const defaultGraph = (application) => ({
 		endDate: dayjs().toISOString(),
 		metrics: [],
 		metricAliases: [],
-		location: 'Bharti-Building',
+		locations: [],
 	},
 	data: {
 		Timestamp: [],

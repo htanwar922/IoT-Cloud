@@ -7,7 +7,7 @@ import { fromLonLat } from "ol/proj";
 import { platformModifierKeyOnly } from "ol/events/condition";
 
 import useStyles from './styles'
-import { AddOverlays, LocationLayer, LocationPopover, Overlays } from "./Locations";
+import { AddOverlays, LocationLayer, LocationPopover } from "./Locations";
 import { Popover } from "@mui/material";
 
 const MapContext = new createContext();
@@ -27,6 +27,7 @@ const MapContainer = ({ children, zoom, center, locations, formState, setFormSta
 	const popoverRef = useRef();
 	const [map, setMap] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
+	const [selectedLocation, setSelectedLocation] = useState(null);
 
 	// on component mount
 	useEffect(() => {
@@ -54,9 +55,16 @@ const MapContainer = ({ children, zoom, center, locations, formState, setFormSta
 				zoom: zoom,
 			}),
 			// controls: [],
-			// overlays: Overlays(locations)
+			overlays: [
+				new Overlay({
+					element: popoverRef.current, // document.getElementById('popup'),
+					positioning: 'center-center',
+					stopEvent: false,
+					id: 'location-popup'
+				})
+			]
 		});
-		AddOverlays(mapObject, locations, anchorEl, setAnchorEl, popoverRef)
+		AddOverlays(mapObject, setAnchorEl, setSelectedLocation)
 		mapObject.setTarget(mapRef.current);
 		setMap(mapObject);
 		return () => mapObject.setTarget(undefined);
@@ -85,8 +93,8 @@ const MapContainer = ({ children, zoom, center, locations, formState, setFormSta
 					open={Boolean(anchorEl)}		// ToDo
 					anchorEl={anchorEl}
 					setAnchorEl={setAnchorEl}
-					// onClose={() => {setAnchorEl(null)}}
 					formState={formState} setFormState={setFormState}
+					selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation}
 				></LocationPopover>
 			</div>
 		</MapContext.Provider>

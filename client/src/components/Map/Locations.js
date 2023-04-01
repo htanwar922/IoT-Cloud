@@ -4,7 +4,7 @@ import { Style, Stroke, Fill, Icon, Text, Circle, RegularShape } from "ol/style"
 import { fromLonLat } from "ol/proj";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { Component, useState } from "react";
+import { Component, Fragment, useState } from "react";
 import { Button, Checkbox, FormControlLabel, Popover, Typography } from "@mui/material";
 
 /**
@@ -16,7 +16,7 @@ export const LocationLayer = (locations) => {
 	console.log(locations)
 	const features = Object.keys(locations).map((locationName, i) => new Feature({
 		geometry: new Point(fromLonLat(locations[locationName])),
-		name: locationName, i: i, type: 'uncheckedBox',
+		locationName: locationName, i: i, type: 'uncheckedBox',
 	}))
 
 	const styles = {
@@ -78,30 +78,13 @@ export const LocationLayer = (locations) => {
 	});
 }
 
-export const Overlays = (locations, popoverRef) => {
-	return Object.keys(locations).map((locationName, i) => new Overlay({
-		position: fromLonLat(locations[locationName]),
-		positioning: 'center-center',
-		element: popoverRef.current,
-	}))
-}
-
 /**
  * 
  * @param {import('ol').Map} mapObject 
- * @param {import("../Applications/Applications").locationsType} locations 
- * @param {HTMLButtonElement | null} anchorEl 
  * @param {Dispatch<SetStateAction<HTMLButtonElement | null>>} setAnchorEl 
- * @param {React.MutableRefObject<Component>} popoverRef 
  */
-export const AddOverlays = (mapObject, locations, anchorEl, setAnchorEl, popoverRef) => {
-	const popup = new Overlay({
-		element: popoverRef.current, // document.getElementById('popup'),
-		positioning: 'center-center',
-		stopEvent: false,
-	});
-	mapObject.addOverlay(popup);
-
+export const AddOverlays = (mapObject, setAnchorEl, setSelectedLocation) => {
+	const popup = mapObject.getOverlayById('location-popup')
 
 	/** @param event {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} */	//React.MouseEvent<HTMLButtonElement>
 	const handleClick = (event) => {
@@ -110,15 +93,17 @@ export const AddOverlays = (mapObject, locations, anchorEl, setAnchorEl, popover
 		const feature = mapObject.getFeaturesAtPixel(event.pixel)[0];
 		if (!feature)
 			{ return }
-		const coordinate = feature.getGeometry().getCoordinates();
-		popup.setPosition(coordinate)
-		console.log(coordinate)
+		console.log(feature.getGeometry().getCoordinates())
+		console.log(feature.get('locationName'))
+		popup.setPosition(feature.getGeometry().getCoordinates())
+		setSelectedLocation(feature.get('locationName'))
 		setAnchorEl(popup.getElement());
 	};
 
 	/** @param event {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} */
 	const handleClose = (event) => {
 		setAnchorEl(null);
+		setSelectedLocation(null)
 		const type = mapObject.hasFeatureAtPixel(event.pixel) ? 'pointer' : 'inherit';
 		mapObject.getViewport().style.cursor = type;
 	};
@@ -127,8 +112,30 @@ export const AddOverlays = (mapObject, locations, anchorEl, setAnchorEl, popover
 	mapObject.on('pointermove', handleClose);
 }
 
-export const LocationPopover = ({ mapObject, id, anchorEl, setAnchorEl, handleClose, formState, setFormState }) => {
-	console.log('MAP', mapObject)
+/**
+ * 
+ * 
+ * @param {{
+ * 		mapObject: import('ol').Map,
+ * 		id: String
+ * 		locations: import("../Applications/Applications").locationsType,
+ * 		anchorEl: HTMLButtonElement,
+ * 		setAnchorEl: Dispatch<SetStateAction<HTMLButtonElement | null>>,
+ * 		formState: import("../Applications/Application/Application").graphType,
+ * 		setFormState: Dispatch<SetStateAction<import("../Applications/Application/Application").graphType | null>>,
+ * }} props
+ * @returns 
+ */
+export const LocationPopover = ({ mapObject, id, locations, anchorEl, setAnchorEl, formState, setFormState, selectedLocation, setSelectedLocation }) => {
+	const checked = selectedLocation in formState.props.locations
+	console.log(checked)
+
+	/** @param event {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} */
+	const handleClose = (event) => {
+		// setAnchorEl(null);
+		setSelectedLocation(null)
+	};
+
 	return (
 		<Popover id={id}
 			open={Boolean(anchorEl)}
@@ -139,12 +146,24 @@ export const LocationPopover = ({ mapObject, id, anchorEl, setAnchorEl, handleCl
 				horizontal: 'left',
 			}}
 		>
-			<FormControlLabel label={<font size='+2'>Bharti</font>} sx={{p: 2}} control={
-				<Checkbox name="bharti" defaultChecked
-					// onChange={(event) => this.setChecked(!this.checked)}
-				/>
-			} />
-			<Button type="reset" onClick={() => {setAnchorEl(null)}}>CLOSE</Button>
+			{selectedLocation
+				? <Fragment>
+					<FormControlLabel label={<font size='+2'>Bharti</font>} sx={{p: 2}} control={
+						<Checkbox name="bharti" checked={checked}
+							onChange={(event) => {
+								if(selectedLocation in formState.props.locations) {
+								}
+								else{
+									setFormState({...formState, props: {...formState.props, locations: [...formState.props.locations, selectedLocation]} })
+								}
+								console.log(formState)
+							}}
+						/>
+					} />
+					<Button type="reset" onClick={handleClose}>CLOSE</Button>
+				</Fragment>
+				: <></>
+			}
 		</Popover>
 	)
 }
