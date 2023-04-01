@@ -123,7 +123,7 @@ const ModalBox = ({ application }) => {
 							<Grid container alignItems="stretch" spacing={3}>
 								<Grid item> {/*xs={12} sm={6}*/}
 									<Props formState={formState} setFormState={setFormState}>
-										<MapBox center={[77.18959/*E*/, 28.54513/*N*/]} zoom={17} />
+										<MapBox center={[77.18959/*E*/, 28.54513/*N*/]} zoom={17} locations={application.locations} />
 									</Props>
 								</Grid>
 

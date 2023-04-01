@@ -7,10 +7,15 @@ import useStyles from './styles'
 /**
  * _Applications list._
  * @typedef {{
+ * 		'Bharti-Building': [Number]
+ *	}} locationsType
+ *
+ * @typedef {{
  * 		name: String,
  * 		alias: String,
  * 		parameters: [String],
  * 		parameterAliases: [String],
+ * 		locations: locationsType
  * 		options: [String]
  *	}} applicationType
  *
@@ -22,6 +27,9 @@ export const ApplicationList = [
 		alias: 'APMD',
 		parameters: ['Temperature', 'Humidity', 'NO2', 'OX', 'CO', 'SO2', 'H2S', 'NO', 'PM_1', 'PM_2&period;5', 'PM_10'],
 		parameterAliases: ['Temperature', 'Humidity', 'NO2', 'O3', 'CO', 'SO2', 'H2S', 'NO', 'PM 1', 'PM 2.5', 'PM 10'],
+		locations: {
+			'Bharti-Building': [77.19035/*E*/, 28.54495/*N*/],
+		},
 		options: []
 	},
 	{
@@ -39,6 +47,9 @@ export const ApplicationList = [
 			"AppPower (Y)", "Power (Y)", "PF (Y)", "Voltage (Y)", "Current (Y)",
 			"AppPower (B)", "Power (B)", "PF (B)", "Voltage (B)", "Current (B)",
 		],
+		locations: {
+			'Bharti-Building': [77.18959/*E*/, 28.54513/*N*/],
+		},
 		options: ['Original', 'Reconstructed']
 	}
 ]
