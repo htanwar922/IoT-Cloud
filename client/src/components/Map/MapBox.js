@@ -1,4 +1,4 @@
-import { createContext, useRef, useState, useEffect } from "react";
+import { createContext, useRef, useState, useEffect, useContext } from "react";
 import { Map, Overlay, View } from "ol";
 import OSM from 'ol/source/OSM';
 import TileLayer from 'ol/layer/Tile';
@@ -8,26 +8,27 @@ import { platformModifierKeyOnly } from "ol/events/condition";
 
 import useStyles from './styles'
 import { AddOverlays, LocationLayer, LocationPopover } from "./Locations";
-import { Popover } from "@mui/material";
+import { FormContext } from "../Applications/Application/Application";
 
-const MapContext = new createContext();
+export const MapContext = createContext();
 
-const MapBox = ({ center, zoom, locations, formState, setFormState }) => {
+const MapBox = ({ center, zoom, locations }) => {
 	return (
-		<MapContainer center={fromLonLat(center)} zoom={zoom} locations={locations} formState={formState} setFormState={setFormState}>
+		<MapContainer center={fromLonLat(center)} zoom={zoom} locations={locations}>
 			{/* <TileLayer source={new OSM()} zIndex={0} /> */}
 			{/* https://github.com/mbrown3321/openlayers-react-map/blob/master/src/Layers/TileLayer.js */}
 		</MapContainer>
 	);
 };
 
-const MapContainer = ({ children, zoom, center, locations, formState, setFormState }) => {
+const MapContainer = ({ children, zoom, center, locations }) => {
 	const classes = useStyles()
 	const mapRef = useRef();
 	const popoverRef = useRef();
 	const [map, setMap] = useState(null);
-	const [anchorEl, setAnchorEl] = useState(null);
-	const [selectedLocation, setSelectedLocation] = useState(null);
+	const formContext = useContext(FormContext)
+	
+	console.log('RENDER')
 
 	// on component mount
 	useEffect(() => {
@@ -64,11 +65,11 @@ const MapContainer = ({ children, zoom, center, locations, formState, setFormSta
 				})
 			]
 		});
-		AddOverlays(mapObject, setAnchorEl, setSelectedLocation)
 		mapObject.setTarget(mapRef.current);
 		setMap(mapObject);
+		AddOverlays(mapObject, formContext)
 		return () => mapObject.setTarget(undefined);
-	}, [center, zoom, locations]);
+	}, [center, zoom, locations, formContext]);
 
 	// zoom change handler
 	useEffect(() => {
@@ -83,18 +84,15 @@ const MapContainer = ({ children, zoom, center, locations, formState, setFormSta
 	}, [map, center])
 
 	return (
-		<MapContext.Provider value={{ map }}>
+		<MapContext.Provider value={map}>
 			<div ref={mapRef} className={classes.olMap}> {/* Container */}
 				{children}
 			</div>
 			<div ref={popoverRef}>
-				<LocationPopover map={map}
+				<LocationPopover
+					mapObject={map}
 					id={classes.olMap + '-popover'}
-					open={Boolean(anchorEl)}		// ToDo
-					anchorEl={anchorEl}
-					setAnchorEl={setAnchorEl}
-					formState={formState} setFormState={setFormState}
-					selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation}
+					locations={locations}
 				></LocationPopover>
 			</div>
 		</MapContext.Provider>

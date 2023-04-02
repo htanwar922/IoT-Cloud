@@ -2,7 +2,7 @@ import { Box, Button, Checkbox, Container, FormControlLabel, FormGroup, Grid, Gr
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import BackspaceRoundedIcon from '@mui/icons-material/BackspaceRounded';
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DataGrid } from '@mui/x-data-grid';
@@ -15,6 +15,8 @@ import Graphs from "../../Graphs/Graphs";
 import MapBox from "../../Map/MapBox";
 import Props from "../../utils/Props";
 import actions from '../../../actions'
+
+export const FormContext = createContext()
 
 /**
  * _Application interface._
@@ -65,7 +67,10 @@ const ModalBox = ({ application }) => {
 		dispatch(actions.selectGraph(null))
 	}
 
-	const [formState, setFormState] = useState(defaultGraph(application))
+	var formState = defaultGraph(application)
+	const setFormState = (value) => {
+		formState = value
+	}
 
 	const selectedGraph = useSelector(state =>
 		state.selectedGraphId ?
@@ -78,6 +83,7 @@ const ModalBox = ({ application }) => {
 			setFormState(selectedGraph)
 			setOpen(true)
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedGraph])
 
 	/** @param event {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} */
@@ -99,7 +105,7 @@ const ModalBox = ({ application }) => {
 	}
 
 	return (
-		<>
+		<FormContext.Provider value={{ formState, setFormState }}>
 			<Button className={classes.newGraphButton} variant='outlined' onClick={handleOpen}>
 				<AddCircleIcon fontSize="large" />
 			</Button>
@@ -122,9 +128,7 @@ const ModalBox = ({ application }) => {
 					<FormGroup onSubmit={handleSubmit}>
 							<Grid container alignItems="stretch" spacing={3}>
 								<Grid item> {/*xs={12} sm={6}*/}
-									<Props formState={formState} setFormState={setFormState}>
-										<MapBox center={[77.18959/*E*/, 28.54513/*N*/]} zoom={17} locations={application.locations} />
-									</Props>
+									<MapBox center={[77.18959/*E*/, 28.54513/*N*/]} zoom={17} locations={application.locations} />
 								</Grid>
 
 								<Grid item xs='auto' sm='auto'>
@@ -142,7 +146,7 @@ const ModalBox = ({ application }) => {
 
 				</Box>
 			</Modal>
-		</>
+		</FormContext.Provider>
 	)
 }
 

@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { createTheme, Grid, ThemeProvider, Typography } from '@mui/material'
+import { createTheme, ThemeProvider, Typography } from '@mui/material'
 
 import App from './App'
 import store from './store'
