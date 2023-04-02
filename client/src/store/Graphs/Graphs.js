@@ -13,22 +13,25 @@ const graphsSlice = createSlice({
 
 		createGraph (state, action) {	// payload - graph
 			action.payload.props.metrics.forEach((metric, i) => {
-				state.graphs.push({
-					...action.payload,
-					_id: uuidv4(),
-					props: {
-						...action.payload.props,
-						metrics: [metric],
-						metricAliases: [action.payload.props.metricAliases[i]]
-					},
-					data: {
-						...action.payload.data,
-						Samples: (() => {
-							var object = {}
-							object[metric] = action.payload.data.Samples[metric]
-							return object
-						})()
-					},
+				action.payload.props.locations.forEach((location, j) => {
+					state.graphs.push({
+						...action.payload,
+						_id: uuidv4(),
+						props: {
+							...action.payload.props,
+							metrics: [metric],
+							metricAliases: [action.payload.props.metricAliases[i]],
+							locations: [location]
+						},
+						data: {
+							...action.payload.data,
+							Samples: (() => {
+								var object = {}
+								object[metric] = action.payload.data.Samples[metric]
+								return object
+							})()
+						},
+					})
 				})
 			})
 		},

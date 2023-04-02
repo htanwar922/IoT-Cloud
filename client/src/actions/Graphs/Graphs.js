@@ -86,7 +86,7 @@ export const streamGraph = (graph, mRef) => async (dispatch) => {
 					dayjs().toISOString()
 		}
 		const { data } = await api.fetchData(props)
-		console.log('HERE', graph._id, props.metrics, props, data)
+		// console.log('HERE', graph._id, props.metrics, props, data)
 		dispatch(actions.rollGraph({graph, props, data}))
 	} catch (error) {
 		console.log(error.message)

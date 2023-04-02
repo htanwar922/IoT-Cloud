@@ -1,4 +1,4 @@
-import { Button, Popover, Stack } from '@mui/material'
+import { Button, Grid, Popover, Stack } from '@mui/material'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import Plot from 'react-plotly.js'
 import EditRounded from '@mui/icons-material/EditRounded'
@@ -9,6 +9,8 @@ import dayjs from 'dayjs'
 import useStyles from './styles'
 import actions from '../../../actions'
 
+var rollDispatched = false
+
 export default function Graph ({ id, doRender }) {
 	const classes = useStyles()
 	const dispatch = useDispatch()
@@ -18,7 +20,8 @@ export default function Graph ({ id, doRender }) {
 
 	const graphId = graph._id
 	const metric = graph.props.metrics[0]
-	const title = graph.props.metricAliases[0]
+	const title = graph.props.locations[0]
+	const metricLabel = graph.props.metricAliases[0]
 	const rollingInterval = graph.props.rollingIntervalSeconds * 1000
 
 	const timerIdRef = useRef(null)
@@ -32,10 +35,14 @@ export default function Graph ({ id, doRender }) {
 	useEffect(() => {
 		// console.log('TID', timerId, timerIdRef.current)
 		if(graph.props.rollingPlot) {	// && timerId === null
+			if(rollDispatched)
+				return
+			rollDispatched = true
 			clearInterval(timerIdRef.current)
 			clearInterval(timerId)
 			var tid = setInterval(() => {
 				dispatch(actions.rollGraph(graph, mRef))
+				rollDispatched = false
 			}, rollingInterval)
 			setTimerId(tid)
 			timerIdRef.current = tid
@@ -71,7 +78,7 @@ export default function Graph ({ id, doRender }) {
 	if(!doRender)
 		return <></>
 	return (
-		<Fragment>
+		<Grid item key={id} className={classes.graphContainer} maxWidth='lg'>
 			<Plot data={[{
 					x: xData,
 					y: yData,
@@ -88,7 +95,7 @@ export default function Graph ({ id, doRender }) {
 						zeroline: false
 					},
 					yaxis: {
-						title: `${title}`,
+						title: `${metricLabel}`,
 					}
 				}}
 			/>
@@ -114,6 +121,6 @@ export default function Graph ({ id, doRender }) {
 					</Button>
 				</Stack>
 			</Popover>
-		</Fragment>
+		</Grid>
 	)
 }

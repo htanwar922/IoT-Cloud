@@ -16,7 +16,6 @@ const MetricPopover = () => {
 		else
 			selectedMetric = null
 		setAnchorEl(anchor)
-		console.log('anchor', anchor)
 	}
 
 	if(anchorEl && selectedMetric)
@@ -39,7 +38,7 @@ const MetricPopover = () => {
 }
 
 export default function Graphs () {
-	const classes = useStyles()
+	// const classes = useStyles()
 
 	const [page, setPage] = useState(1);
 
@@ -47,14 +46,14 @@ export default function Graphs () {
 	const graphIds = useSelector(state => state.graphs.map(graph => graph._id))
 	const graphMetrics = useSelector(state => state.graphs.map(graph => graph.props.metrics[0]))
 	const metrics = [...new Set(graphMetrics)]
-	console.log('ReRendered', metrics)
+	console.log('ReRendered', graphIds)
 
 	return (
 		<Fragment>
 			<Stack spacing={2}>
 				<Pagination color="primary" shape="rounded"
 					count={metrics.length} page={page}
-					onChange={(event, value) => { setPage(value); }}
+					onChange={(_, value) => { setPage(value); }}
 					sx={{
 						bgcolor: 'background.paper',
 						boxShadow: 1,
@@ -84,12 +83,21 @@ export default function Graphs () {
 			<Grid container direction="column" spacing={0} alignItems="center" justifyContent="center">
 				{!graphIds.length ? <></> : <>
 					{graphIds.map((id, index) =>
-						<Grid item key={id} className={classes.graphContainer} maxWidth='lg'>
-							<Graph id={id} doRender={metrics[page - 1] === graphMetrics[index]} />
-						</Grid>
+						<Graph key={id} id={id} doRender={metrics[page - 1] === graphMetrics[index]} />
 					)}
 				</>}
 			</Grid>
+			
+
+			<Typography variant="h4" align="center"
+				margin={1} padding={1}
+				bgcolor='white'
+				boxShadow={1}
+				borderRadius={2}
+			>
+				{metrics[page - 1]}
+			</Typography>
+			
 			<Stack spacing={2}>
 				<Pagination color="primary" shape="rounded"
 					count={metrics.length} page={page}
@@ -109,8 +117,8 @@ export default function Graphs () {
 						/>
 					)}
 				/>
-				<MetricPopover/>
 			</Stack>
+			<MetricPopover/>
 		</Fragment>
 	)
 }

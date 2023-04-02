@@ -11,5 +11,11 @@ export default makeStyles(() => ({
 		color: 'black',
 		backgroundColor: 'white',
 		transform: `translate(1020px, -200px)`,
+	},
+	graphContainer: {
+		padding: 10,
+		display: 'flex',
+		flexDirection: 'row',
+		alignItems: 'center'
 	}
 }))
