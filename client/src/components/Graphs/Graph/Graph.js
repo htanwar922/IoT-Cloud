@@ -9,7 +9,7 @@ import dayjs from 'dayjs'
 import useStyles from './styles'
 import actions from '../../../actions'
 
-export default function Graph ({ id }) {
+export default function Graph ({ id, doRender }) {
 	const classes = useStyles()
 	const dispatch = useDispatch()
 
@@ -68,6 +68,8 @@ export default function Graph ({ id }) {
 		dispatch(actions.removeGraph(graphId))
 	}
 
+	if(!doRender)
+		return <></>
 	return (
 		<Fragment>
 			<Plot data={[{
