@@ -71,6 +71,7 @@ export default function Graphs () {
 				/>
 			</Stack>
 
+			{!metrics.length ? <></> :
 			<Typography variant="h4" align="center"
 				margin={1} padding={1}
 				bgcolor='white'
@@ -78,7 +79,7 @@ export default function Graphs () {
 				borderRadius={2}
 			>
 				{metrics[page - 1]}
-			</Typography>
+			</Typography>}
 
 			<Grid container direction="column" spacing={0} alignItems="center" justifyContent="center">
 				{!graphIds.length ? <></> : <>
@@ -87,8 +88,8 @@ export default function Graphs () {
 					)}
 				</>}
 			</Grid>
-			
 
+			{!metrics.length ? <></> :
 			<Typography variant="h4" align="center"
 				margin={1} padding={1}
 				bgcolor='white'
@@ -96,12 +97,12 @@ export default function Graphs () {
 				borderRadius={2}
 			>
 				{metrics[page - 1]}
-			</Typography>
+			</Typography>}
 
 			<Stack spacing={2}>
 				<Pagination color="primary" shape="rounded"
 					count={metrics.length} page={page}
-					onChange={(event, value) => { setPage(value); }}
+					onChange={(_, value) => { setPage(value); }}
 					sx={{
 						bgcolor: 'background.paper',
 						boxShadow: 1,

@@ -20,7 +20,7 @@ export const createGraph = async (req, res) => {
 		dateIST_To.setDate(dateIST_To.getDate() + 1)
 	}
 
-	var query = { Timestamp: {}, /*Location: element.location*/ }
+	var query = { Timestamp: {}, Location: element.locations[0] }
 	query.Timestamp['$gte'] = dateIST_From.toISOString()
 	if(element.endDate)
 		query.Timestamp['$lt'] = dateIST_To.toISOString()
