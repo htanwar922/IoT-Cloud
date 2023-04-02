@@ -3,7 +3,7 @@ import { Fragment, useState } from "react"
 import { useSelector } from "react-redux"
 
 import Graph from "./Graph/Graph"
-import useStyles from './styles'
+// import useStyles from './styles'
 
 var setAnchorElGlobal = null
 var selectedMetric = null
@@ -97,7 +97,7 @@ export default function Graphs () {
 			>
 				{metrics[page - 1]}
 			</Typography>
-			
+
 			<Stack spacing={2}>
 				<Pagination color="primary" shape="rounded"
 					count={metrics.length} page={page}
