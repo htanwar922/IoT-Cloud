@@ -7,7 +7,7 @@ import useStyles from './styles'
 /**
  * _Applications list._
  * @typedef {{
- * 		'Bharti-Building': [Number],
+ * 		'Bharti School of Telecommunication': [Number],
  * 		'Library': [Number],
  *	}} locationsType
  *
@@ -29,7 +29,7 @@ export const ApplicationList = [
 		parameters: ['Temperature', 'Humidity', 'NO2', 'OX', 'CO', 'SO2', 'H2S', 'NO', 'PM_1', 'PM_2&period;5', 'PM_10'],
 		parameterAliases: ['Temperature', 'Humidity', 'NO2', 'O3', 'CO', 'SO2', 'H2S', 'NO', 'PM 1', 'PM 2.5', 'PM 10'],
 		locations: {
-			'Bharti-Building': [77.19035/*E*/, 28.54486/*N*/],
+			'Bharti School of Telecommunication': [77.19035/*E*/, 28.54486/*N*/],
 			'Library': [77.19135/*E*/, 28.5444/*N*/],
 		},
 		options: []
@@ -50,7 +50,7 @@ export const ApplicationList = [
 			"AppPower (B)", "Power (B)", "PF (B)", "Voltage (B)", "Current (B)",
 		],
 		locations: {
-			'Bharti-Building': [77.18959/*E*/, 28.54513/*N*/],
+			'Bharti School of Telecommunication': [77.18959/*E*/, 28.54513/*N*/],
 			// ToDo
 		},
 		options: ['Original', 'Reconstructed']

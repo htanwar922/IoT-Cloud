@@ -9,7 +9,7 @@ import dayjs from 'dayjs'
 import useStyles from './styles'
 import actions from '../../../actions'
 
-var rollDispatched = false
+// var rollDispatched = false
 
 export default function Graph ({ id, doRender }) {
 	const classes = useStyles()
@@ -20,29 +20,29 @@ export default function Graph ({ id, doRender }) {
 
 	const graphId = graph._id
 	const metric = graph.props.metrics[0]
-	const title = graph.props.locations[0]
+	const location = graph.props.locations[0]
 	const metricLabel = graph.props.metricAliases[0]
 	const rollingInterval = graph.props.rollingIntervalSeconds * 1000
 
 	const timerIdRef = useRef(null)
 	const mRef = useRef(1)
 
-	var xData = graph.data.Timestamp.map(timestamp => dayjs(timestamp).add(5*60+30, 'minute').toISOString())
-	var yData = graph.data.Samples[metric]
+	var xData = graph.data.Timestamp[location].map(timestamp => dayjs(timestamp).add(5*60+30, 'minute').toISOString())
+	var yData = graph.data.Samples[location][metric]
 	
 	const [timerId, setTimerId] = useState(null)
 
 	useEffect(() => {
 		// console.log('TID', timerId, timerIdRef.current)
 		if(graph.props.rollingPlot) {	// && timerId === null
-			if(rollDispatched)
-				return
-			rollDispatched = true
+			// if(rollDispatched)
+			// 	return
+			// rollDispatched = true
 			clearInterval(timerIdRef.current)
 			clearInterval(timerId)
 			var tid = setInterval(() => {
 				dispatch(actions.rollGraph(graph, mRef))
-				rollDispatched = false
+				// rollDispatched = false
 			}, rollingInterval)
 			setTimerId(tid)
 			timerIdRef.current = tid
@@ -88,7 +88,7 @@ export default function Graph ({ id, doRender }) {
 				}]}
 				layout={{
 					width: '1080',
-					title: `${title}`,
+					title: `${location}`,
 					xaxis: {
 						title: 'Timeseries',
 						type: 'time',

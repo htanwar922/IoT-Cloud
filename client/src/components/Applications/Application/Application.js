@@ -224,8 +224,8 @@ const MetricsGrid = ({ metrics, metricAliases, formState, setFormState }) => {
  *			locations: [String],
  *		},
  *		data: {
- *			Timestamp: [String],
- *			Samples: {}
+ *			Timestamp: {},	// {Location: [String]}
+ *			Samples: {},	// {Location: {Metric: [Number]}}
  *		},
  * }} graphType
  * /
@@ -250,7 +250,7 @@ const defaultGraph = (application) => ({
 		locations: [],
 	},
 	data: {
-		Timestamp: [],
+		Timestamp: {},
 		Samples: {}
 	},
 })

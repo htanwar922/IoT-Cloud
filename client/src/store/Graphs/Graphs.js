@@ -25,11 +25,17 @@ const graphsSlice = createSlice({
 						},
 						data: {
 							...action.payload.data,
+							Timestamp: (() => {
+								var object = {}
+								object[location] = action.payload.data.Timestamp[location]
+								return object
+							})(),
 							Samples: (() => {
 								var object = {}
-								object[metric] = action.payload.data.Samples[metric]
+								object[location] = {}
+								object[location][metric] = action.payload.data.Samples[location][metric]
 								return object
-							})()
+							})(),
 						},
 					})
 				})
@@ -41,27 +47,28 @@ const graphsSlice = createSlice({
 			if(index === -1)
 				return
 			var metric = state.graphs[index].props.metrics[0]
+			var location = state.graphs[index].props.locations[0]
 			state.graphs[index].props = action.payload.props
-			state.graphs[index].data.Timestamp = [
+			state.graphs[index].data.Timestamp[location] = [
 				state.graphs[index].props.startDate,
-				...action.payload.data.Timestamp,
+				...action.payload.data.Timestamp[location],
 				state.graphs[index].props.endDate
 			]
-			state.graphs[index].data.Samples[metric] = [
-				state.graphs[index].data.Timestamp.length === 2 ? 0 : null,
-				...action.payload.data.Samples[metric],
-				state.graphs[index].data.Timestamp.length === 2 ? 0 : null
+			state.graphs[index].data.Samples[location][metric] = [
+				state.graphs[index].data.Timestamp[location].length === 2 ? 0 : null,
+				...action.payload.data.Samples[location][metric],
+				state.graphs[index].data.Timestamp[location].length === 2 ? 0 : null
 			]
 
-			// var sortIndex = argSort(state.graphs[index].data.Timestamp)
-			// state.graphs[index].data.Timestamp = arraySliceAt(state.graphs[index].data.Timestamp, sortIndex)
-			// state.graphs[index].data.Samples[metric] = arraySliceAt(state.graphs[index].data.Samples[metric], sortIndex)
+			// var sortIndex = argSort(state.graphs[index].data.Timestamp[location])
+			// state.graphs[index].data.Timestamp[location] = arraySliceAt(state.graphs[index].data.Timestamp[location], sortIndex)
+			// state.graphs[index].data.Samples[location][metric] = arraySliceAt(state.graphs[index].data.Samples[location][metric], sortIndex)
 			
 			state.graphs[index].props.endDate = dayjs(
-					action.payload.data.Timestamp[action.payload.data.Timestamp.length - 1]
+					action.payload.data.Timestamp[location][action.payload.data.Timestamp[location].length - 1]
 				).add(state.graphs[index].props.rollingIntervalSeconds, 'second').toISOString()
 			
-			console.log('Len', state.graphs[index].data.Timestamp.length)
+			console.log('Len', state.graphs[index].data.Timestamp[location].length)
 		},
 
 		rollGraph (state, action) {		// payload - {graph, data}
@@ -70,27 +77,28 @@ const graphsSlice = createSlice({
 				return
 			console.log(action.payload)
 			var metric = state.graphs[index].props.metrics[0]
+			var location = state.graphs[index].props.locations[0]
 			state.graphs[index].props = action.payload.props
-			state.graphs[index].data.Timestamp = [
+			state.graphs[index].data.Timestamp[location] = [
 				state.graphs[index].props.startDate,
-				...action.payload.data.Timestamp,
+				...action.payload.data.Timestamp[location],
 				state.graphs[index].props.endDate
 			]
-			state.graphs[index].data.Samples[metric] = [
-				state.graphs[index].data.Timestamp.length === 2 ? 0 : null,
-				...action.payload.data.Samples[metric],
-				state.graphs[index].data.Timestamp.length === 2 ? 0 : null
+			state.graphs[index].data.Samples[location][metric] = [
+				state.graphs[index].data.Timestamp[location].length === 2 ? 0 : null,
+				...action.payload.data.Samples[location][metric],
+				state.graphs[index].data.Timestamp[location].length === 2 ? 0 : null
 			]
 
-			// var sortIndex = argSort(state.graphs[index].data.Timestamp)
-			// state.graphs[index].data.Timestamp = arraySliceAt(state.graphs[index].data.Timestamp, sortIndex)
-			// state.graphs[index].data.Samples[metric] = arraySliceAt(state.graphs[index].data.Samples[metric], sortIndex)
+			// var sortIndex = argSort(state.graphs[index].data.Timestamp[location])
+			// state.graphs[index].data.Timestamp[location] = arraySliceAt(state.graphs[index].data.Timestamp[location], sortIndex)
+			// state.graphs[index].data.Samples[location][metric] = arraySliceAt(state.graphs[index].data.Samples[location][metric], sortIndex)
 			
 			state.graphs[index].props.endDate = dayjs(
-					action.payload.data.Timestamp[action.payload.data.Timestamp.length - 1]
+					action.payload.data.Timestamp[location][action.payload.data.Timestamp[location].length - 1]
 				).add(state.graphs[index].props.rollingIntervalSeconds, 'second').toISOString()
 			
-			console.log('Len', state.graphs[index].data.Timestamp.length)
+			console.log('Len', state.graphs[index].data.Timestamp[location].length)
 		},
 
 		selectGraph (state, action) {	// payload - graph id
@@ -99,24 +107,34 @@ const graphsSlice = createSlice({
 
 		updateGraph (state, action) {	// payload - current graph
 			let index = findElementById(state.graphs, state.selectedGraphId)
-			state.graphs.splice(index + 1, 0, ...action.payload.props.metrics.map((metric, i) => ({
-					...action.payload,
-					_id: uuidv4(),
-					props: {
-						...action.payload.props,
-						metrics: [metric],
-						metricAliases: [action.payload.props.metricAliases[i]]
-					},
-					data: {
-						...action.payload.data,
-						Samples: (() => {
-							var object = {}
-							object[metric] = action.payload.data.Samples[metric]
-							return object
-						})()
-					}
+			state.graphs.splice(index + 1, 0, ...action.payload.props.metrics.forEach((metric, i) => {
+				action.payload.props.locations.forEach((location, j) => {
+					state.graphs.push({
+						...action.payload,
+						_id: uuidv4(),
+						props: {
+							...action.payload.props,
+							metrics: [metric],
+							metricAliases: [action.payload.props.metricAliases[i]],
+							locations: [location]
+						},
+						data: {
+							...action.payload.data,
+							Timestamp: (() => {
+								var object = {}
+								object[location] = action.payload.data.Timestamp[location]
+								return object
+							})(),
+							Samples: (() => {
+								var object = {}
+								object[location] = {}
+								object[location][metric] = action.payload.data.Samples[location][metric]
+								return object
+							})(),
+						},
+					})
 				})
-			))
+			}))
 			graphsSlice.caseReducers.removeGraph(state, {payload: state.selectedGraphId})
 			state.selectedGraphId = null
 		},

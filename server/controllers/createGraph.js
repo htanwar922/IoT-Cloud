@@ -20,32 +20,41 @@ export const createGraph = async (req, res) => {
 		dateIST_To.setDate(dateIST_To.getDate() + 1)
 	}
 
-	var query = { Timestamp: {}, Location: element.locations[0] }
-	query.Timestamp['$gte'] = dateIST_From.toISOString()
-	if(element.endDate)
-		query.Timestamp['$lt'] = dateIST_To.toISOString()
-	console.log('QUERY', query)
-
 	var response = {
-		Timestamp: [],
+		Timestamp: {},
 		Samples: {}
 	}
+	console.log(element.locations)
 
-	await dbCollection(req.body.applicationName).find(query).exec()
+	for(let location of element.locations) {
+		var query = { Timestamp: {}, Location: location }
+		query.Timestamp['$gte'] = dateIST_From.toISOString()
+		if(element.endDate)
+			query.Timestamp['$lt'] = dateIST_To.toISOString()
+		console.log('QUERY', query)
+
+		await dbCollection(req.body.applicationName).find(query).exec()
 		.then(docs => {
-			element.metrics.forEach(metric => response.Samples[metric] = [])
+			response.Timestamp[location] = []
+			response.Samples[location] = {}
+			element.metrics.forEach(metric => {
+				response.Samples[location][metric] = []
+			})
 			docs.sort(GetSortOrder('Timestamp')).forEach(doc => {
-				response.Timestamp.push(doc.Timestamp)
+				response.Timestamp[location].push(doc.Timestamp)
 				element.metrics.forEach(metric => {
-					response.Samples[metric].push(doc[metric])
+					response.Samples[location][metric].push(doc[metric])
+					console.log('HERE', metric, location)
 				})
 			})
 		})
 		.catch(error => {
 			console.error(error)
 		})
+		// console.log('RESP1', response, response.Samples)
+	}
 	
-	// console.log(response)
+	console.log('RESP2', response)
 	res.send(JSON.stringify(response))
 	res.end()
 }
