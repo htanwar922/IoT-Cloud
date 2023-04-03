@@ -24,7 +24,6 @@ export const createGraph = async (req, res) => {
 		Timestamp: {},
 		Samples: {}
 	}
-	console.log(element.locations)
 
 	for(let location of element.locations) {
 		var query = { Timestamp: {}, Location: location }
@@ -44,17 +43,14 @@ export const createGraph = async (req, res) => {
 				response.Timestamp[location].push(doc.Timestamp)
 				element.metrics.forEach(metric => {
 					response.Samples[location][metric].push(doc[metric])
-					console.log('HERE', metric, location)
 				})
 			})
 		})
 		.catch(error => {
 			console.error(error)
 		})
-		// console.log('RESP1', response, response.Samples)
 	}
 	
-	console.log('RESP2', response)
 	res.send(JSON.stringify(response))
 	res.end()
 }
